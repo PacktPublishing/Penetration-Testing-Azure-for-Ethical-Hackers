@@ -44,7 +44,7 @@ $sastoken = New-AzStorageAccountSASToken -Service Blob -ResourceType Service,Con
 
 
 ## Download Windows Custom Script Extension
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/PacktPublishing/Implementing-Microsoft-Azure-Security-Technologies/main/chapter-3/custom-script-extensions/windows_custom_extension.json -OutFile windows_custom_extension.json
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-3/custom-script-extensions/windows_custom_extension.json -OutFile windows_custom_extension.json
 
 ## Deploy Windows VM with Azure PowerShell installed (Output public IP)
 $winvmname = "winvm$random"

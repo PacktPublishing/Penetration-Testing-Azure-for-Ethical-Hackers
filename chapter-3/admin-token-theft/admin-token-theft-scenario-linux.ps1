@@ -8,7 +8,7 @@ New-AzADUser -DisplayName $displayname -UserPrincipalName $user -Password $secur
 
 ## Assign role in Azure subscription
 $subid=$(az account show --query id --output tsv)
-az role assignment create --role "Contributor" --assignee $user --subscription $subid
+az role assignment create --role "Reader" --assignee $user --subscription $subid
 
 ## Create Storage account with SAS token
 $group = "pentest-rg"
@@ -26,7 +26,7 @@ $EndTime = $startTime.AddDays(6)
 $sastoken = New-AzStorageContainerSASToken -Name $containername -Permission rwdl -StartTime $StartTime -ExpiryTime $EndTime -context $ctx
 
 ## Download Linux Custom Script Extension
-Invoke-WebRequest -Uri https://raw.githubusercontent.com/PacktPublishing/Implementing-Microsoft-Azure-Security-Technologies/main/chapter-2/custom-script-extensions/linux_custom_extension.json -OutFile linux_custom_extension.json
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-3/custom-script-extensions/linux_custom_extension.json -OutFile linux_custom_extension.json
 
 ## Deploy Linux VM with Azure PowerShell installed (Output public IP)
 $linuxvmname = "linuxvm$random"
