@@ -14,9 +14,9 @@ New-AzADUser -DisplayName $displayname -UserPrincipalName $user -Password $secur
 
 ## Assign role in Azure subscription
 $subid=$(az account show --query id --output tsv)
-Write-Host -ForegroundColor Green "#########################################################################"
+Write-Host -ForegroundColor Green "####################################################################"
 Write-Host -ForegroundColor Green "# Assigning the Reader role to $user #"
-Write-Host -ForegroundColor Green "#########################################################################"
+Write-Host -ForegroundColor Green "####################################################################"
 az role assignment create --role "Reader" --assignee $user --subscription $subid
 
 ## Create Storage account with SAS token
