@@ -1,0 +1,4 @@
+{
+    "fileUris": ["https://raw.githubusercontent.com/PacktPublishing/Implementing-Microsoft-Azure-Security-Technologies/main/chapter-3/custom-script-extensions/azure_powershell_install.ps1"],
+    "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File azure_powershell_install.ps1"
+}
