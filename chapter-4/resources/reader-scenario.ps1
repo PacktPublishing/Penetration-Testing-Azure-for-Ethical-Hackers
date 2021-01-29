@@ -36,6 +36,12 @@ $userid=$(az ad user list --upn $user --query [].objectId -o tsv)
 ## Assign reader user as application owner
 az ad app owner add --id $appid --owner-object-id $userid
 
+# Deploy ARM Template
+$group = "pentest-rg"
+$location = "uksouth"
+az group create --name $group --location $location
+az deployment group create --name VMDeployment --resource-group $group --template-uri "https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-4/resources/badtemplate.json"
+
 ## Script Output
 Start-Transcript -Path reader-account-output.txt
 Write-Host -ForegroundColor Green "#################"
