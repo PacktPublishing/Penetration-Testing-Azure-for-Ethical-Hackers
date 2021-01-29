@@ -19,28 +19,49 @@ Write-Host -ForegroundColor Green "# Assigning the Reader role to $user #"
 Write-Host -ForegroundColor Green "####################################################################"
 az role assignment create --role "Reader" --assignee $user --subscription $subid
 
-## generate random number and application name
+## Set variables and create resource group
 $random = Get-Random -Maximum 1000
-$appname = "customapp"
+$customappname = "customapp"
+$containerappname = "containerapp"
+$acrname="acr$random"
+$group = "pentest-rg"
+$location = "uksouth"
+az group create --name $group --location $location
 
 ## obtain subscription id
 $subid=$(az account show --query id --output tsv)
 
-## create service principal with contributor permissions
-$customapp=$(az ad sp create-for-rbac -n $appname --role Contributor --scopes /subscriptions/$subid)
+## create service principals with contributor permissions
+$customapp=$(az ad sp create-for-rbac -n $customappname --role Contributor --scopes /subscriptions/$subid)
+$containerapp=$(az ad sp create-for-rbac -n $containerappname --role Contributor --scopes /subscriptions/$subid)
 
 ## Get the app id and user id
-$appid=$(az ad app list --display-name $appname --query [].appId -o tsv)
+$customappid=$(az ad app list --display-name $customappname --query [].appId -o tsv)
+$containerappid=$(echo $containerapp | jq -r .appId)
+$containerappsecret=$(echo $containerapp | jq -r .password)
+$tenantid=$(echo $containerapp | jq -r .tenant)
 $userid=$(az ad user list --upn $user --query [].objectId -o tsv)
 
+## Download Docker file
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-4/resources/Dockerfile -OutFile Dockerfile
+
+## Modify Docker file
+sed -i.bak1 's/"$containerappid"/"'"$containerappid"'"/' Dockerfile
+sed -i.bak2 's/"$containerappsecret"/"'"$containerappsecret"'"/' Dockerfile
+sed -i.bak3 's/"$tenantid"/"'"$tenantid"'"/' Dockerfile
+
+## Create container registry and container image
+az acr create --resource-group $group --location $location --name $acrname --sku Standard
+
+az acr build --resource-group $group --registry $acrname --image nodeapp-web:v1 .
+
 ## Assign reader user as application owner
-az ad app owner add --id $appid --owner-object-id $userid
+az ad app owner add --id $customappid --owner-object-id $userid
 
 # Deploy ARM Template
-$group = "pentest-rg"
-$location = "uksouth"
-az group create --name $group --location $location
 az deployment group create --name VMDeployment --resource-group $group --template-uri "https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-4/resources/badtemplate.json"
+
+az vm identity assign -g $group -n LinuxVM --role Contributor --scope /subscriptions/$subid
 
 ## Script Output
 Start-Transcript -Path reader-account-output.txt
