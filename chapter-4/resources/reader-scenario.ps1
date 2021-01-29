@@ -63,6 +63,11 @@ az deployment group create --name VMDeployment --resource-group $group --templat
 
 az vm identity assign -g $group -n LinuxVM --role Contributor --scope /subscriptions/$subid
 
+## Create Run as account
+Invoke-WebRequest https://raw.githubusercontent.com/azureautomation/runbooks/master/Utility/AzRunAs/Create-RunAsAccount.ps1 -outfile Create-RunAsAccount.ps1
+
+.\Create-RunAsAccount.ps1 -ResourceGroup $group -AutomationAccountName "automation-acct" -SubscriptionId $subid -ApplicationDisplayName "automation-acct" -SelfSignedCertPlainPassword "2Jja2gt59NUA689q"-CreateClassicRunAsAccount $false
+
 ## Script Output
 Start-Transcript -Path reader-account-output.txt
 Write-Host -ForegroundColor Green "#################"

@@ -88,6 +88,48 @@
       "metadata": {
         "description": "Name of the Network Security Group"
       }
+    },
+    "accountName": {
+      "type": "String",
+      "defaultValue": "automation-acct"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "defaultValue": "https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-4/resources/scripts/",
+      "metadata": {
+        "description": "URI to artifacts location"
+      }
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated"
+      }
+    },
+    "sampleGraphicalRunbookName": {
+      "type": "String",
+      "defaultValue": "AzureAutomationGraphicalRunbook"
+    },
+    "sampleGraphicalRunbookDescription": {
+      "type": "String",
+      "defaultValue": "An example runbook that gets all the Resource Manager resources by using the Run As account (service principal)."
+    },
+    "samplePowerShellRunbookName": {
+      "type": "String",
+      "defaultValue": "AzureAutomationPSScript"
+    },
+    "samplePowerShellRunbookDescription": {
+      "type": "String",
+      "defaultValue": "An example runbook that gets all the Resource Manager resources by using the Run As account (service principal)."
+    },
+    "samplePython2RunbookName": {
+      "type": "String",
+      "defaultValue": "AzureAutomationPython2"
+    },
+    "samplePython2RunbookDescription": {
+      "type": "String",
+      "defaultValue": "An example runbook that gets all the Resource Manager resources by using the Run As account (service principal)."
     }
   },
   "variables": {
@@ -244,6 +286,81 @@
           "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
         }
       }
+    },
+    {
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2015-01-01-preview",
+      "name": "[parameters('accountName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [],
+      "tags": {},
+      "properties": {
+          "sku": {
+                    "name": "Basic"
+          }
+      },
+      "resources": [
+        {
+          "type": "runbooks",
+          "apiVersion": "2015-01-01-preview",
+          "name": "[parameters('sampleGraphicalRunbookName')]",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "runbookType": "GraphPowerShell",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "description": "[parameters('sampleGraphicalRunbookDescription')]",
+            "publishContentLink": {
+            "uri": "[uri(parameters('_artifactsLocation'), concat('scripts/AzureAutomationTutorial.graphrunbook', parameters('_artifactsLocationSasToken')))]",
+            "version": "1.0.0.0"
+            }
+          }
+        },
+        {
+          "type": "runbooks",
+          "apiVersion": "2015-01-01-preview",
+          "name": "[parameters('samplePowerShellRunbookName')]",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "runbookType": "PowerShell",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "description": "[parameters('samplePowerShellRunbookDescription')]",
+            "publishContentLink": {
+            "uri": "[uri(parameters('_artifactsLocation'), concat('scripts/AzureAutomationTutorial.ps1', parameters('_artifactsLocationSasToken')))]",
+            "version": "1.0.0.0"
+            }
+          }
+        },
+        {
+          "type": "runbooks",
+          "apiVersion": "2015-01-01-preview",
+          "name": "[parameters('samplePython2RunbookName')]",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[concat('Microsoft.Automation/automationAccounts/', parameters('accountName'))]"
+          ],
+          "tags": {},
+          "properties": {
+            "runbookType": "Python2",
+            "logProgress": "false",
+            "logVerbose": "false",
+            "description": "[parameters('samplePython2RunbookDescription')]",
+            "publishContentLink": {
+              "uri": "[uri(parameters('_artifactsLocation'), concat('scripts/AzureAutomationTutorialPython2.py', parameters('_artifactsLocationSasToken')))]",
+            "version": "1.0.0.0"
+            }
+          }
+        }
+      ]
     }
   ],
   "outputs": {
