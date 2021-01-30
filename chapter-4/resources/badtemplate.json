@@ -130,9 +130,106 @@
     "samplePython2RunbookDescription": {
       "type": "String",
       "defaultValue": "An example runbook that gets all the Resource Manager resources by using the Run As account (service principal)."
+    },
+    "webappname": {
+      "type": "string",
+      "defaultValue": "[concat('webap-', uniqueString(resourceGroup().name))]"
+    },
+    "administratorLogin": {
+      "type": "string",
+      "defaultValue": "mysqladmin"
+    },
+    "administratorLoginPassword": {
+      "type": "securestring",
+      "defaultValue": "2Jja2gt59NUA689q"
+    },
+    "workerSize": {
+      "type": "string",
+      "defaultValue": "1"
+    },
+    "hostingEnvironment": {
+      "type": "string"
+    },
+    "dbSkucapacity": {
+      "type": "int",
+      "defaultValue": 2,
+      "allowedValues": [
+        2,
+        4,
+        8,
+        16,
+        32
+      ],
+      "metadata": {
+        "description": "Azure database for mySQL compute capacity in vCores (2,4,8,16,32)"
+      }
+    },
+    "dbSkuName": {
+      "type": "string",
+      "defaultValue": "GP_Gen5_2",
+      "allowedValues": [
+        "GP_Gen5_2",
+        "GP_Gen5_4",
+        "GP_Gen5_8",
+        "GP_Gen5_16",
+        "GP_Gen5_32",
+        "MO_Gen5_2",
+        "MO_Gen5_4",
+        "MO_Gen5_8",
+        "MO_Gen5_16",
+        "MO_Gen5_32"
+      ],
+      "metadata": {
+        "description": "Azure database for mySQL sku name "
+      }
+    },
+    "dbSkuSizeMB": {
+      "type": "int",
+      "defaultValue": 51200,
+      "allowedValues": [
+        102400,
+        51200
+      ],
+      "metadata": {
+        "description": "Azure database for mySQL Sku Size "
+      }
+    },
+    "dbSkuTier": {
+      "type": "string",
+      "defaultValue": "GeneralPurpose",
+      "allowedValues": [
+        "GeneralPurpose",
+        "MemoryOptimized"
+      ],
+      "metadata": {
+        "description": "Azure database for mySQL pricing tier"
+      }
+    },
+    "mysqlVersion": {
+      "type": "string",
+      "defaultValue": "5.7",
+      "allowedValues": [
+        "5.6",
+        "5.7"
+      ],
+      "metadata": {
+        "description": "MySQL version"
+      }
+    },
+    "databaseskuFamily": {
+      "type": "string",
+      "defaultValue": "Gen5",
+      "metadata": {
+        "description": "Azure database for mySQL sku family"
+      }
     }
+
+
   },
   "variables": {
+    "databaseName": "[concat('database', uniqueString(resourceGroup().id))]",
+    "serverName": "[concat('mysql-',  uniqueString(resourceGroup().id))]",
+    "hostingPlanName": "[concat('hpn-',  uniqueString(resourceGroup().id))]",
     "publicIpAddressName": "[concat(parameters('vmName'), 'PublicIP' )]",
     "networkInterfaceName": "[concat(parameters('vmName'),'NetInt')]",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]",
@@ -361,7 +458,136 @@
           }
         }
       ]
-    }
+    },
+    {
+      "name": "[parameters('webappname')]",
+      "type": "Microsoft.Web/sites",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]"
+      ],
+      "properties": {
+        "siteConfig": {
+          "connectionStrings": [
+            {
+              "name": "defaultConnection",
+              "ConnectionString": "[concat('Database=', variables('databaseName'), ';Data Source=', variables('serverName') ,'.mysql.database.azure.com;User Id=',parameters('administratorLogin'),'@',variables('serverName') ,';Password=',parameters('administratorLoginPassword'))]",
+              "type": "MySQL"
+              }
+            ],
+          "appSettings": [
+            {
+              "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+              "value": "true"
+             },
+            {
+              "name": "GIT_REPO",
+              "value": "https://github.com/azureappserviceoss/wordpress-azure"
+            },
+            {
+              "name": "GIT_BRANCH",
+              "value": "linux-appservice"
+            },
+            {
+              "name": "DATABASE_HOST",
+              "value": "[concat(variables('serverName') ,'.mysql.database.azure.com')]"
+            },
+            {
+              "name": "DATABASE_NAME",
+              "value": "[variables('databaseName')]"
+            },
+            {
+              "name": "DATABASE_PASSWORD",
+              "value": "[parameters('administratorLoginPassword')]"
+            },
+            {
+              "name": "DATABASE_USERNAME",
+              "value": "[concat(parameters('administratorLogin'),'@',variables('serverName'))]"
+            }
+          ],
+          "appCommandLine": "",
+          "linuxFxVersion": "DOCKER|appsvcorg/wordpress-alpine-php:0.72"
+        },
+      "name": "[parameters('webappname')]",
+      "clientAffinityEnabled": false,
+      "serverFarmId": "[variables('hostingPlanName')]"
+      },
+      "apiVersion": "2018-11-01",
+      "location": "[parameters('location')]"
+    },
+    {
+            "apiVersion": "2016-09-01",
+            "name": "[variables('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location')]",
+            "properties": {
+                "name": "[variables('hostingPlanName')]",
+                "workerSizeId": "[parameters('workerSize')]",
+                "reserved": true,
+                "numberOfWorkers": "1",
+                "hostingEnvironment": "[parameters('hostingEnvironment')]"
+            },
+            "sku": {
+        "Tier": "Standard",
+        "Name": "S1"
+      },
+            "kind": "linux"
+        },
+    {
+            "name": "[variables('serverName')]",
+            "type": "Microsoft.DBforMySQL/servers",
+            "apiVersion": "2017-12-01-preview",
+            "location": "[parameters('location')]",
+            "properties": {
+        "createMode": "Default",
+        "version": "[parameters('mysqlVersion')]",
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "storageProfile": {
+          "storageMB": "[parameters('dbSkuSizeMB')]",
+          "backupRetentionDays": 7,
+          "geoRedundantBackup": "Disabled"
+        },
+        "sslEnforcement": "Disabled"
+      },
+            "sku": {
+                "name": "[parameters('dbSkuName')]",
+                "tier": "[parameters('dbSkuTier')]",
+                "capacity": "[parameters('dbSkucapacity')]",
+                "size": "[parameters('dbSkuSizeMB')]",
+                "family": "[parameters('databaseSkuFamily')]"
+            },
+            "resources": [
+                {
+                    "name": "AllowAll",
+                    "type": "firewallrules",
+                    "apiVersion": "2017-12-01-preview",
+                    "properties": {
+                        "startIpAddress": "0.0.0.0",
+                        "endIpAddress": "255.255.255.255"
+                    },
+                    "location": "[parameters('location')]",
+                    "dependsOn": [
+                        "[concat('Microsoft.DBforMySQL/servers/', variables('serverName'), '/databases/' , variables('databaseName'))]",
+                        "[concat('Microsoft.DBforMySQL/servers/', variables('serverName'))]"
+                    ]
+                },
+                {
+                    "name": "[variables('databaseName')]",
+                    "type": "databases",
+                    "apiVersion": "2017-12-01-preview",
+                    "properties": {
+                        "charset": "utf8",
+                        "collation": "utf8_general_ci"
+                    },
+                    "dependsOn": [
+                        "[concat('Microsoft.DBforMySQL/servers/', variables('serverName'))]"
+                    ]
+                }
+            ],
+            "tags": {
+                "AppProfile": "Wordpress"
+            }
+        }
   ],
   "outputs": {
     "adminUsername": {
