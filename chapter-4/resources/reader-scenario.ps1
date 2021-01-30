@@ -59,7 +59,7 @@ az acr build --resource-group $group --registry $acrname --image nodeapp-web:v1 
 az ad app owner add --id $customappid --owner-object-id $userid
 
 # Deploy ARM Template
-az deployment group create --name VMDeployment --resource-group $group --template-uri "https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-4/resources/badtemplate.json"
+az deployment group create --name TemplateDeployment --resource-group $group --template-uri "https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-4/resources/badtemplate.json"
 
 az vm identity assign -g $group -n LinuxVM --role Contributor --scope /subscriptions/$subid
 
