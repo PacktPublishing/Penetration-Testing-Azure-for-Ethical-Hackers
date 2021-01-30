@@ -46,9 +46,9 @@ $userid=$(az ad user list --upn $user --query [].objectId -o tsv)
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-4/resources/Dockerfile -OutFile Dockerfile
 
 ## Modify Docker file
-sed -i.bak1 's/"$containerappid"/"'"$containerappid"'"/' Dockerfile
-sed -i.bak2 's/"$containerappsecret"/"'"$containerappsecret"'"/' Dockerfile
-sed -i.bak3 's/"$tenantid"/"'"$tenantid"'"/' Dockerfile
+sed -i 's/"$containerappid"/"'"$containerappid"'"/' Dockerfile
+sed -i 's/"$containerappsecret"/"'"$containerappsecret"'"/' Dockerfile
+sed -i 's/"$tenantid"/"'"$tenantid"'"/' Dockerfile
 
 ## Create container registry and container image
 az acr create --resource-group $group --location $location --name $acrname --sku Standard
