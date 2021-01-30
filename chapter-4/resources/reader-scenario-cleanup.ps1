@@ -34,3 +34,5 @@ Write-Host -ForegroundColor Green "#############################################
 Write-Host -ForegroundColor Green "# Cleaning up resource group #"
 Write-Host -ForegroundColor Green "####################################################################"
 az group delete -n $group --yes
+
+Write-Host -ForegroundColor Green "Successfully cleaned up resources!!"
