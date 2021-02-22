@@ -30,8 +30,8 @@ az group create --name $group --location $location
 $subid=$(az account show --query id --output tsv)
 
 ## create vms with contributor permissions
-az vm create -g $group -n $vm1name --image 2019-Datacenter-smalldisk --admin-username azureuser --admin-password $password
-az vm create -g $group -n $vm2name --image 2019-Datacenter-smalldisk --admin-username azureuser --admin-password $password
+az vm create -g $group -n $vm1name --image win2019datacenter --admin-username azureuser --admin-password $password
+az vm create -g $group -n $vm2name --image win2019datacenter --admin-username azureuser --admin-password $password
 az vm open-port --port 3389 --resource-group $group --name $vm1name
 az vm identity assign -g $group -n $vm1name --role Contributor --scope /subscriptions/$subid
 az vm stop --resource-group $group --name $vm2name
