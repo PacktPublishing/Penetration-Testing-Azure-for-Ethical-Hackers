@@ -34,7 +34,7 @@ az vm create -g $group -n $vm1name --image win2019datacenter --admin-username az
 az vm create -g $group -n $vm2name --image win2019datacenter --admin-username azureuser --admin-password $password
 az vm open-port --port 3389 --resource-group $group --name $vm1name
 az vm identity assign -g $group -n $vm1name --role Contributor --scope /subscriptions/$subid
-az vm stop --resource-group $group --name $vm2name
+az vm deallocate --resource-group $group --name $vm2name
 
 ## Script Output
 Start-Transcript -Path contributor-iaas-scenario-output.txt
