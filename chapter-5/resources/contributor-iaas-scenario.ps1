@@ -7,16 +7,16 @@ $password = Read-Host "Please enter a password"
 $securepassword = ConvertTo-SecureString -String $password -AsPlainText -Force
 $user = "contributoruser@$upnsuffix"
 $displayname=$(echo $user | sed 's/@.*//')
-Write-Host -ForegroundColor Green "#############################################"
+Write-Host -ForegroundColor Green "###########################################################################"
 Write-Host -ForegroundColor Green "# Creating new admin user $user in Azure AD #"
-Write-Host -ForegroundColor Green "#############################################"
+Write-Host -ForegroundColor Green "###########################################################################"
 New-AzADUser -DisplayName $displayname -UserPrincipalName $user -Password $securepassword -MailNickname $displayname
 
 ## assign role in Azure subscription
 $subid=$(az account show --query id --output tsv)
-Write-Host -ForegroundColor Green "###########################################"
+Write-Host -ForegroundColor Green "#########################################################################"
 Write-Host -ForegroundColor Green "# Assigning the Contributor role to $user #"
-Write-Host -ForegroundColor Green "###########################################"
+Write-Host -ForegroundColor Green "#########################################################################"
 az role assignment create --role "Contributor" --assignee $user --subscription $subid
 
 ## Set variables and create resource group
@@ -44,9 +44,9 @@ az vm deallocate --resource-group $group --name $vm2name
 
 ## Script Output
 Start-Transcript -Path contributor-iaas-scenario-output.txt
-Write-Host -ForegroundColor Green "#################"
+Write-Host -ForegroundColor Green "#################################"
 Write-Host -ForegroundColor Green "# Script Output #"
-Write-Host -ForegroundColor Green "#################"
+Write-Host -ForegroundColor Green "#################################"
 Write-Host -ForegroundColor Green "Azure Contributor Admin User:" $user
 Write-Host -ForegroundColor Green "Azure Contributor Admin User Password:" $password
 Write-Host -ForegroundColor Green " "
