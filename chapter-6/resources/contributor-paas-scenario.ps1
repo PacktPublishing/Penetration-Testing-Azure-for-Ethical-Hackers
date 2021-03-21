@@ -73,8 +73,8 @@ az role assignment create --role "Storage Blob Data Contributor" --assignee $sig
 
 az storage blob upload --account-name $storagename --container-name data --name sensitive_customer_private_information.csv --file sensitive_customer_private_information.csv --auth-mode login
 
-az storage account update -g $group --name $storagename --default-action Deny
-az storage account network-rule add -g $group --account-name $storagename --ip-address "16.17.18.19"
+# az storage account update -g $group --name $storagename --default-action Deny
+# az storage account network-rule add -g $group --account-name $storagename --ip-address "16.17.18.19"
 
 ## Create Cosmos DB
 Write-Host -ForegroundColor Green "######################################"
