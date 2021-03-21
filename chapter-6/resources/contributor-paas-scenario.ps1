@@ -29,6 +29,7 @@ $aciname = "aci$random"
 $storagename = "storage$random"
 $cosmosname = "cosmos$random"
 $sqlsrvname = "sqlsrv$random"
+$acrname="acr$random"
 $location = "uksouth"
 $gitrepo = "https://github.com/Azure-Samples/php-docs-hello-world"
 az group create --name $group --location $location
@@ -90,6 +91,22 @@ az sql server create -l $location -g $group -n $sqlsrvname -u sqladminuser -p 4z
 az sql db create -g $group -s $sqlsrvname -n advworksDB --sample-name AdventureWorksLT --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false
 
 az sql server firewall-rule create -g $group -s $sqlsrvname -n "corp-app-rule" --start-ip-address 16.17.18.19 --end-ip-address 16.17.18.19
+
+# Get connection string for the database
+$connstring=$(az sql db show-connection-string --name advworksDB --server $sqlsrvname --client ado.net --output tsv)
+$connstring=$connstring -replace "<username>", "sqladminuser"
+$connstring=$connstring -replace "<password>", "4zVDknE3TyMxxW2J"
+
+az webapp config appsettings set --name $webappname -g $group --settings "SQLSRV_CONNSTR=$connstring" 
+
+## Create container registry and container image
+Write-Host -ForegroundColor Green "######################################"
+Write-Host -ForegroundColor Green "# Creating Container Registry #"
+Write-Host -ForegroundColor Green "######################################"
+az acr create -g $group --location $location --name $acrname --sku Standard --admin-enabled true
+
+## Create automation account
+az deployment group create --name TemplateDeployment --resource-group $group --template-uri "https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-6/resources/automationacct.json"
 
 ## Script Output
 Start-Transcript -Path contributor-iaas-scenario-output.txt
