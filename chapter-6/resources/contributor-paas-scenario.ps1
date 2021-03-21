@@ -30,11 +30,12 @@ $storagename = "storage$random"
 $cosmosname = "cosmos$random"
 $sqlsrvname = "sqlsrv$random"
 $location = "uksouth"
-$gitrepo=https://github.com/Azure-Samples/php-docs-hello-world
+$gitrepo = "https://github.com/Azure-Samples/php-docs-hello-world"
 az group create --name $group --location $location
 
 ## obtain subscription id
 $subid=$(az account show --query id --output tsv)
+$signedinuserid=$(az ad signed-in-user show --query objectId -o tsv)
 
 ## create webapp with owner permissions
 Write-Host -ForegroundColor Green "######################################"
@@ -59,13 +60,15 @@ az keyvault key create --vault-name $keyvaultname --name "disk-encryption-key" -
 az container create -g $group -n $aciname --image mcr.microsoft.com/azure-cli --assign-identity --scope /subscriptions/$subid --command-line "tail -f /dev/null"
 
 ## Create storage
-Write-Host -ForegroundColor Green "######################################"
+Write-Host -ForegroundColor Green "########################################"
 Write-Host -ForegroundColor Green "# Creating Storage Account #"
-Write-Host -ForegroundColor Green "######################################"
+Write-Host -ForegroundColor Green "########################################"
 az storage account create --name $storagename -g $group --location $location --sku Standard_LRS
 az storage container create --account-name $storagename --name data --auth-mode login
 
 Invoke-WebRequest https://raw.githubusercontent.com/davidokeyode/azure-offensive/master/sensitive_customer_private_information.csv -O sensitive_customer_private_information.csv 
+
+az role assignment create --role "Storage Blob Data Contributor" --assignee $signedinuserid --scope "/subscriptions/$subid/resourceGroups/$group/providers/Microsoft.Storage/storageAccounts/$storagename"
 
 az storage blob upload --account-name $storagename --container-name data --name sensitive_customer_private_information.csv --file sensitive_customer_private_information.csv --auth-mode login
 
@@ -84,7 +87,7 @@ Write-Host -ForegroundColor Green "# Creating SQL Database #"
 Write-Host -ForegroundColor Green "######################################"
 az sql server create -l $location -g $group -n $sqlsrvname -u sqladminuser -p 4zVDknE3TyMxxW2J
 
-az sql db create -g mygroup -s myserver -n advworksDB --sample-name AdventureWorksLT --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false
+az sql db create -g $group -s $sqlsrvname -n advworksDB --sample-name AdventureWorksLT --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false
 
 az sql server firewall-rule create -g $group -s $sqlsrvname -n "corp-app-rule" --start-ip-address 16.17.18.19 --end-ip-address 16.17.18.19
 
