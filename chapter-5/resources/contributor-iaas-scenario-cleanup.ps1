@@ -15,7 +15,7 @@ Write-Host -ForegroundColor Green "#############################################
 Write-Host -ForegroundColor Green "# Cleaning up role assignments #"
 Write-Host -ForegroundColor Green "###############################################################"
 az role assignment delete --assignee $userid --role "Contributor"
-az role assignment delete --assignee $managedidentity --role "Contributor"
+az role assignment delete --assignee $managedidentity --role "Owner"
 
 Write-Host -ForegroundColor Green "###############################################################"
 Write-Host -ForegroundColor Green "# Cleaning up identity objects #"

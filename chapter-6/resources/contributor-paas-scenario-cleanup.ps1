@@ -29,5 +29,6 @@ Write-Host -ForegroundColor Green "#############################################
 az group delete -n $group --yes
 rm *.ps1
 rm *.txt
+rm sensitive_customer_private_information.csv
 
 Write-Host -ForegroundColor Green "Successfully cleaned up resources!!"
