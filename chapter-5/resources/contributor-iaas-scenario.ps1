@@ -37,8 +37,7 @@ az vm create -g $group -n $vm3name --image UbuntuLTS --admin-username azureuser 
 az vm open-port --port 3389 --resource-group $group --name $vm1name
 az vm open-port --port 3389 --resource-group $group --name $vm2name
 az vm open-port --port 22 --resource-group $group --name $vm3name
-az vm identity assign -g $group -n $vm1name --role Owner --scope /subscriptions/$subid
-az vm identity assign -g $group -n $vm2name --role Contributor --scope /subscriptions/$subid
+az vm identity assign -g $group -n $vm1name --role Contributor --scope /subscriptions/$subid
 az vm identity assign -g $group -n $vm3name --role Owner --scope /subscriptions/$subid
 az vm deallocate --resource-group $group --name $vm2name
 
