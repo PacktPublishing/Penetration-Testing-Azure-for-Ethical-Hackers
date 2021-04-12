@@ -23,10 +23,11 @@ az role assignment create --role "Contributor" --assignee $user --subscription $
 ## Set variables and create resource group
 $group = "pentest-rg"
 $random = Get-Random -Maximum 10000
+$random2 = Get-Random -Maximum 100
 $webappname = "webapp$random"
 $keyvaultname = "azptkv$random"
 $aciname = "aci$random"
-$storagename = "storage$random"
+$storagename = "pubstore$random$random2"
 $cosmosname = "cosmos$random"
 $sqlsrvname = "sqlsrv$random"
 $acrname="acr$random"
