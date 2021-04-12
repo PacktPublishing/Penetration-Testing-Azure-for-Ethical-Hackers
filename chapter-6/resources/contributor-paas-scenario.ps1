@@ -108,11 +108,14 @@ Write-Host -ForegroundColor Green "######################################"
 az acr create -g $group --location $location --name $acrname --sku Standard --admin-enabled true
 
 # Upload blob into blob storage container
-az storage blob upload --account-name $storagename --container-name data --name sensitive_customer_private_information.csv --file sensitive_customer_private_information.csv --auth-mode login
+# az storage blob upload --account-name $storagename --container-name data --name sensitive_customer_private_information.csv --file sensitive_customer_private_information.csv --auth-mode login
+
+$key=$(az storage account keys list -g $group -n $storagename --query [0].value -o tsv)
+az storage blob upload --account-name $storagename --account-key $key --container-name data --file sensitive_customer_private_information.csv --name sensitive_customer_private_information.csv
 
 ## Create automation runas account
-Invoke-WebRequest https://raw.githubusercontent.com/azureautomation/runbooks/master/Utility/AzRunAs/Create-RunAsAccount.ps1 -O Create-RunAsAccount.ps1
-.\Create-RunAsAccount.ps1 -ResourceGroup $group -AutomationAccountName "automation-acct" -SubscriptionId $subid -ApplicationDisplayName "automation-acct" -SelfSignedCertPlainPassword "wedTfYgQPVQf^*&P2r" -CreateClassicRunAsAccount $false
+# Invoke-WebRequest https://raw.githubusercontent.com/azureautomation/runbooks/master/Utility/AzRunAs/Create-RunAsAccount.ps1 -O Create-RunAsAccount.ps1
+# .\Create-RunAsAccount.ps1 -ResourceGroup $group -AutomationAccountName "automation-acct" -SubscriptionId $subid -ApplicationDisplayName "automation-acct" -SelfSignedCertPlainPassword "wedTfYgQPVQf^*&P2r" -CreateClassicRunAsAccount $false
 
 ## Script Output
 Start-Transcript -Path contributor-iaas-scenario-output.txt
