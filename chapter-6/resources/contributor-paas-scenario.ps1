@@ -89,7 +89,7 @@ Write-Host -ForegroundColor Green "# Creating SQL Database #"
 Write-Host -ForegroundColor Green "######################################"
 az sql server create -l $location -g $group -n $sqlsrvname -u sqladminuser -p 4zVDknE3TyMxxW2J
 
-az sql db create -g $group -s $sqlsrvname -n advworksDB --sample-name AdventureWorksLT --edition GeneralPurpose --family Gen4 --capacity 1 --zone-redundant false
+az sql db create -g $group -s $sqlsrvname -n advworksDB --sample-name AdventureWorksLT --edition GeneralPurpose --family Gen5 --capacity 1 --zone-redundant false
 
 az sql server firewall-rule create -g $group -s $sqlsrvname -n "corp-app-rule" --start-ip-address 16.17.18.19 --end-ip-address 16.17.18.19
 
