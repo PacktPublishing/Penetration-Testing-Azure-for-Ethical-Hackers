@@ -72,8 +72,6 @@ Invoke-WebRequest https://raw.githubusercontent.com/davidokeyode/azure-offensive
 
 az role assignment create --role "Storage Blob Data Contributor" --assignee $signedinuserid --scope "/subscriptions/$subid/resourceGroups/$group/providers/Microsoft.Storage/storageAccounts/$storagename"
 
-az storage blob upload --account-name $storagename --container-name data --name sensitive_customer_private_information.csv --file sensitive_customer_private_information.csv --auth-mode login
-
 # az storage account update -g $group --name $storagename --default-action Deny
 # az storage account network-rule add -g $group --account-name $storagename --ip-address "16.17.18.19"
 
@@ -100,14 +98,21 @@ $connstring=$connstring -replace "<password>", "4zVDknE3TyMxxW2J"
 
 az webapp config appsettings set --name $webappname -g $group --settings "SQLSRV_CONNSTR=$connstring" 
 
+## Create automation account
+az deployment group create --name TemplateDeployment --resource-group $group --template-uri "https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-6/resources/automationacct.json"
+
 ## Create container registry and container image
 Write-Host -ForegroundColor Green "######################################"
 Write-Host -ForegroundColor Green "# Creating Container Registry #"
 Write-Host -ForegroundColor Green "######################################"
 az acr create -g $group --location $location --name $acrname --sku Standard --admin-enabled true
 
-## Create automation account
-az deployment group create --name TemplateDeployment --resource-group $group --template-uri "https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-6/resources/automationacct.json"
+# Upload blob into blob storage container
+az storage blob upload --account-name $storagename --container-name data --name sensitive_customer_private_information.csv --file sensitive_customer_private_information.csv --auth-mode login
+
+## Create automation runas account
+Invoke-WebRequest https://raw.githubusercontent.com/azureautomation/runbooks/master/Utility/AzRunAs/Create-RunAsAccount.ps1 -O Create-RunAsAccount.ps1
+.\Create-RunAsAccount.ps1 -ResourceGroup $group -AutomationAccountName "automation-acct" -SubscriptionId $subid -ApplicationDisplayName "automation-acct" -SelfSignedCertPlainPassword "wedTfYgQPVQf^*&P2r" -CreateClassicRunAsAccount $false
 
 ## Script Output
 Start-Transcript -Path contributor-iaas-scenario-output.txt
