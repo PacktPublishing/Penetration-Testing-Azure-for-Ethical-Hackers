@@ -13,14 +13,14 @@ $ownerdisplayname=$(echo $owneruser | sed 's/@.*//')
 Write-Host -ForegroundColor Green "################################################################################################################"
 Write-Host -ForegroundColor Green "# Creating new admin users $gauser and $owneruser in Azure AD #"
 Write-Host -ForegroundColor Green "################################################################################################################"
-$ganewuser=$(New-AzADUser -DisplayName $gadisplayname -UserPrincipalName $gauser -Password $securepassword -MailNickname $gadisplayname)
+New-AzADUser -DisplayName $gadisplayname -UserPrincipalName $gauser -Password $securepassword -MailNickname $gadisplayname
 New-AzADUser -DisplayName $ownerdisplayname -UserPrincipalName $owneruser -Password $securepassword -MailNickname $ownerdisplayname
 
 
 ## assign global administrator role to user
-$ganewuserid = $ganewuser.Id
+$gauserid=$(az ad user list --upn $gauser --query [].objectId -o tsv)
 $globaladminid=$((Get-AzureADDirectoryRole | where {$_.DisplayName -eq 'Global Administrator'}).ObjectId)
-Add-AzureADDirectoryRoleMember -ObjectId $globaladminid -RefObjectId $ganewuserid
+Add-AzureADDirectoryRoleMember -ObjectId $globaladminid -RefObjectId $gauserid
 
 ## assign role in Azure subscription
 $subid=$(az account show --query id --output tsv)
@@ -36,9 +36,9 @@ Start-Transcript -Path owner-scenario-output.txt
 Write-Host -ForegroundColor Green "#################################"
 Write-Host -ForegroundColor Green "# Script Output #"
 Write-Host -ForegroundColor Green "#################################"
-Write-Host -ForegroundColor Green "Azure Global Admin User:" $user
+Write-Host -ForegroundColor Green "Azure Global Admin User:" $gauser 
 Write-Host -ForegroundColor Green "Azure Global Admin User Password:" $password
-Write-Host -ForegroundColor Green "Azure Owner Admin User:" $user
+Write-Host -ForegroundColor Green "Azure Owner Admin User:" $owneruser
 Write-Host -ForegroundColor Green "Azure Owner Admin User Password:" $password
 Write-Host -ForegroundColor Green " "
 Stop-Transcript
