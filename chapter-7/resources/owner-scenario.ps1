@@ -1,7 +1,7 @@
 $starttime = Get-Date
 Write-Host -ForegroundColor Green "Deployment Started $starttime"
 
-## Create contributoruser
+## Create scenario users
 $upnsuffix=$(az ad signed-in-user show --query userPrincipalName --output tsv | sed 's/.*@//')
 $password = Read-Host "Please enter a password"
 # $location = Read-Host "Please enter a location E.g. uksouth, eastus, westeurope"
