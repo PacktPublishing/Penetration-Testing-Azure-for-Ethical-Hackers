@@ -3,8 +3,8 @@ Write-Host -ForegroundColor Green "Cleanup Started $starttime"
 
 ## Set the user and service principal names
 $upnsuffix=$(az ad signed-in-user show --query userPrincipalName --output tsv | sed 's/.*@//')
-$owneruser = "contributoruser@$upnsuffix"
-$gauser = "contributoruser@$upnsuffix"
+$owneruser = "owneruser@$upnsuffix"
+$gauser = "globaladminuser@$upnsuffix"
 $group = "pentest-rg"
 
 ## Get the app id and user id
