@@ -107,6 +107,12 @@ Write-Host -ForegroundColor Green "# Creating Container Registry #"
 Write-Host -ForegroundColor Green "######################################"
 az acr create -g $group --location $location --name $acrname --sku Standard --admin-enabled true
 
+## Create automation account credential
+$User = "automation-cred-user"
+$Password = ConvertTo-SecureString "SuperS3cretP@ssW0rd!" -AsPlainText -Force
+$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $Password
+Set-AzAutomationCredential -AutomationAccountName "automation-acct" -Name "AutomationHelper" -ResourceGroupName $group -Value $Credential
+
 # Upload blob into blob storage container
 # az storage blob upload --account-name $storagename --container-name data --name sensitive_customer_private_information.csv --file sensitive_customer_private_information.csv --auth-mode login
 
