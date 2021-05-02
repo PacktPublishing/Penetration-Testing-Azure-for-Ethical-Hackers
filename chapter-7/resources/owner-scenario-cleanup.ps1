@@ -2,6 +2,7 @@ $starttime = Get-Date
 Write-Host -ForegroundColor Green "Cleanup Started $starttime"
 
 ## Set the user and service principal names
+Connect-AzureAD
 $upnsuffix=$(az ad signed-in-user show --query userPrincipalName --output tsv | sed 's/.*@//')
 $owneruser = "owneruser@$upnsuffix"
 $gauser = "globaladminuser@$upnsuffix"
