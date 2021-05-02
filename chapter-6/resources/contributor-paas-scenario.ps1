@@ -108,9 +108,9 @@ Write-Host -ForegroundColor Green "######################################"
 az acr create -g $group --location $location --name $acrname --sku Standard --admin-enabled true
 
 ## Create automation account credential
-$User = "automation-cred-user"
-$Password = ConvertTo-SecureString "SuperS3cretP@ssW0rd!" -AsPlainText -Force
-$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $User, $Password
+$automationuser = "automation-cred-user"
+$automationpassword = ConvertTo-SecureString "SuperS3cretP@ssW0rd!" -AsPlainText -Force
+$Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $automationuser, $automationpassword
 Set-AzAutomationCredential -AutomationAccountName "automation-acct" -Name "AutomationHelper" -ResourceGroupName $group -Value $Credential
 
 # Upload blob into blob storage container
