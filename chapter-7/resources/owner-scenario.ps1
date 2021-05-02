@@ -30,6 +30,9 @@ Write-Host -ForegroundColor Green "#############################################
 az role assignment create --role "Owner" --assignee $owneruser --subscription $subid
 
 ## Set variables and create resource group
+$group = "pentest-rg"
+$location = "uksouth"
+az group create --name $group --location $location
 
 ## Script Output
 Start-Transcript -Path owner-scenario-output.txt
