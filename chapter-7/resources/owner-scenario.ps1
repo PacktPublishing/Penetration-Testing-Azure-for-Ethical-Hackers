@@ -2,6 +2,7 @@ $starttime = Get-Date
 Write-Host -ForegroundColor Green "Deployment Started $starttime"
 
 ## Create scenario users
+Connect-AzureAD
 $upnsuffix=$(az ad signed-in-user show --query userPrincipalName --output tsv | sed 's/.*@//')
 $password = Read-Host "Please enter a password"
 # $location = Read-Host "Please enter a location E.g. uksouth, eastus, westeurope"
