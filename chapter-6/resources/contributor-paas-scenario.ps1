@@ -111,7 +111,7 @@ az acr create -g $group --location $location --name $acrname --sku Standard --ad
 $automationuser = "automation-cred-user"
 $automationpassword = ConvertTo-SecureString "SuperS3cretP@ssW0rd!" -AsPlainText -Force
 $Credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $automationuser, $automationpassword
-Set-AzAutomationCredential -AutomationAccountName "automation-acct" -Name "AutomationHelper" -ResourceGroupName $group -Value $Credential
+New-AzAutomationCredential -AutomationAccountName "automation-acct" -Name "AutomationCredential" -ResourceGroupName $group -Value $Credential
 
 # Upload blob into blob storage container
 # az storage blob upload --account-name $storagename --container-name data --name sensitive_customer_private_information.csv --file sensitive_customer_private_information.csv --auth-mode login
