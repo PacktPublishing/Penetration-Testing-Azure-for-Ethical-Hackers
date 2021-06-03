@@ -68,8 +68,8 @@ Start-Transcript -Path reader-account-output.txt
 Write-Host -ForegroundColor Green "#################"
 Write-Host -ForegroundColor Green "# Script Output #"
 Write-Host -ForegroundColor Green "#################"
-Write-Host -ForegroundColor Green "Azure Reader Admin User:" $user
-Write-Host -ForegroundColor Green "Azure Reader Admin User Password:" $password
+Write-Host -ForegroundColor Green "Azure Reader User:" $user
+Write-Host -ForegroundColor Green "Azure Reader User Password:" $password
 Write-Host -ForegroundColor Green " "
 Stop-Transcript
 $endtime = Get-Date
