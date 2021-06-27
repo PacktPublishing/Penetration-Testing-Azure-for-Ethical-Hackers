@@ -58,9 +58,6 @@ az keyvault secret set --vault-name $keyvaultname --name "SQLAdminPassword" --va
 az keyvault secret set --vault-name $keyvaultname --name "db-encrption-key" --value "Pnfcc4F29XKNM5QB" --description "Database Encryption Key"
 az keyvault key create --vault-name $keyvaultname --name "disk-encryption-key" --protection software
 
-## Create container group with system-managed identity
-az container create -g $group -n $aciname --image mcr.microsoft.com/azure-cli --assign-identity --scope /subscriptions/$subid --command-line "tail -f /dev/null"
-
 ## Create storage
 Write-Host -ForegroundColor Green "########################################"
 Write-Host -ForegroundColor Green "# Creating Storage Account #"
@@ -74,12 +71,6 @@ az role assignment create --role "Storage Blob Data Contributor" --assignee $sig
 
 # az storage account update -g $group --name $storagename --default-action Deny
 # az storage account network-rule add -g $group --account-name $storagename --ip-address "16.17.18.19"
-
-## Create Cosmos DB
-Write-Host -ForegroundColor Green "######################################"
-Write-Host -ForegroundColor Green "# Creating Cosmos DB #"
-Write-Host -ForegroundColor Green "######################################"
-az cosmosdb create -n $cosmosname -g $group --ip-range-filter "16.17.18.19"
 
 ## Create Azure SQL
 Write-Host -ForegroundColor Green "######################################"
@@ -100,12 +91,6 @@ az webapp config appsettings set --name $webappname -g $group --settings "SQLSRV
 
 ## Create automation account
 az deployment group create --name TemplateDeployment --resource-group $group --template-uri "https://raw.githubusercontent.com/PacktPublishing/Penetration-Testing-Azure-for-Ethical-Hackers/main/chapter-6/resources/automationacct.json"
-
-## Create container registry and container image
-Write-Host -ForegroundColor Green "######################################"
-Write-Host -ForegroundColor Green "# Creating Container Registry #"
-Write-Host -ForegroundColor Green "######################################"
-az acr create -g $group --location $location --name $acrname --sku Standard --admin-enabled true
 
 ## Create automation account credential
 $automationuser = "automation-cred-user"
