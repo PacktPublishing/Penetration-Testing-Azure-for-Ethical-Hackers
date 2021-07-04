@@ -44,7 +44,7 @@ $signedinuserid=$(az ad signed-in-user show --query objectId -o tsv)
 Write-Host -ForegroundColor Green "##########################################"
 Write-Host -ForegroundColor Green "# Creating Linux VM #"
 Write-Host -ForegroundColor Green "##########################################"
-az vm create -g $group -n ptlinuxvm --image UbuntuLTS --admin-username pentestadmin --admin-password $securepassword --public-ip-address-dns-name $vmfqdn
+az vm create -g $group -n ptlinuxvm --image UbuntuLTS --admin-username pentestadmin --admin-password $password --public-ip-address-dns-name $vmfqdn
 
 az vm open-port --port 22 -g $group -n ptlinuxvm
 
