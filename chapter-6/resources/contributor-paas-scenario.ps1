@@ -33,11 +33,22 @@ $sqlsrvname = "sqlsrv$random"
 $acrname="acr$random"
 $location = "uksouth"
 $gitrepo = "https://github.com/Azure-Samples/php-docs-hello-world"
+$vmfqdn = "ptlinuxvm$random"
 az group create --name $group --location $location
 
 ## obtain subscription id
 $subid=$(az account show --query id --output tsv)
 $signedinuserid=$(az ad signed-in-user show --query objectId -o tsv)
+
+## create Linux VM
+Write-Host -ForegroundColor Green "##########################################"
+Write-Host -ForegroundColor Green "# Creating Linux VM #"
+Write-Host -ForegroundColor Green "##########################################"
+az vm create -g $group -n ptlinuxvm --image UbuntuLTS --admin-username pentestadmin --admin-password $securepassword --public-ip-address-dns-name $vmfqdn
+
+az vm open-port --port 22 -g $group -n ptlinuxvm
+
+$vmfqdnoutput=$(az vm show -g $group -n ptlinuxvm -d --query fqdns -o tsv)
 
 ## create webapp with owner permissions
 Write-Host -ForegroundColor Green "######################################"
@@ -115,6 +126,9 @@ Write-Host -ForegroundColor Green "# Script Output #"
 Write-Host -ForegroundColor Green "#################################"
 Write-Host -ForegroundColor Green "Azure Contributor Admin User:" $user
 Write-Host -ForegroundColor Green "Azure Contributor Admin User Password:" $password
+Write-Host -ForegroundColor Green " "
+Write-Host -ForegroundColor Green "Linux VM FQDN:" $vmfqdnoutput
+Write-Host -ForegroundColor Green "Linux VM Password:" $password
 Write-Host -ForegroundColor Green " "
 Stop-Transcript
 $endtime = Get-Date
