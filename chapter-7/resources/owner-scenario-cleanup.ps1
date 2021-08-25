@@ -25,10 +25,10 @@ Write-Host -ForegroundColor Green "#############################################
 az ad user delete --id $owneruserid
 az ad user delete --id $gauserid
 
-Write-Host -ForegroundColor Green "##############################################################"
-Write-Host -ForegroundColor Green "# Cleaning up resource group #"
-Write-Host -ForegroundColor Green "##############################################################"
-az group delete -n $group --yes
+# Write-Host -ForegroundColor Green "##############################################################"
+# Write-Host -ForegroundColor Green "# Cleaning up resource group #"
+# Write-Host -ForegroundColor Green "##############################################################"
+# az group delete -n $group --yes
 rm *.ps1
 rm *.txt
 
