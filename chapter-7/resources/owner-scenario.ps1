@@ -2,7 +2,8 @@ $starttime = Get-Date
 Write-Host -ForegroundColor Green "Deployment Started $starttime"
 
 ## Create scenario users
-Connect-AzureAD
+import-module AzureAD.Standard.Preview
+AzureAD.Standard.Preview\Connect-AzureAD -Identity -TenantID $env:ACC_TID
 $upnsuffix=$(az ad signed-in-user show --query userPrincipalName --output tsv | sed 's/.*@//')
 $password = Read-Host "Please enter a password"
 # $location = Read-Host "Please enter a location E.g. uksouth, eastus, westeurope"
@@ -31,9 +32,9 @@ Write-Host -ForegroundColor Green "#############################################
 az role assignment create --role "Owner" --assignee $owneruser --subscription $subid
 
 ## Set variables and create resource group
-$group = "pentest-rg"
-$location = "uksouth"
-az group create --name $group --location $location
+# $group = "pentest-rg"
+# $location = "uksouth"
+# az group create --name $group --location $location
 
 ## Script Output
 Start-Transcript -Path owner-scenario-output.txt
