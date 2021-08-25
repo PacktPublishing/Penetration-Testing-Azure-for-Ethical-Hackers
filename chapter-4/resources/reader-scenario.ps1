@@ -20,7 +20,7 @@ Write-Host -ForegroundColor Green "#############################################
 az role assignment create --role "Reader" --assignee $user --subscription $subid
 
 ## Set variables and create resource group
-$random = Get-Random -Maximum 1000
+$random = Get-Random -Maximum 100000 -Minimum 10000
 $customappname = "customapp"
 $containerappname = "containerapp"
 $acrname="acr$random"
