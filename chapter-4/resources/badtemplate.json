@@ -133,7 +133,7 @@
     },
     "webappname": {
       "type": "string",
-      "defaultValue": "[concat('webapp-', uniqueString(resourceGroup().name))]"
+      "defaultValue": "[concat('webapp-', uniqueString(resourceGroup().id))]"
     },
     "administratorLogin": {
       "type": "string",
