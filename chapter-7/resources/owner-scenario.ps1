@@ -20,7 +20,7 @@ New-AzADUser -DisplayName $ownerdisplayname -UserPrincipalName $owneruser -Passw
 
 
 ## assign global administrator role to user
-$gauserid=$(az ad user list --upn $gauser --query [].objectId -o tsv)
+$gauserid=$(az ad user list --upn $gauser --query [].id -o tsv)
 $globaladminid=$((Get-AzureADDirectoryRole | where {$_.DisplayName -eq 'Global Administrator'}).ObjectId)
 Add-AzureADDirectoryRoleMember -ObjectId $globaladminid -RefObjectId $gauserid
 
