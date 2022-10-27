@@ -62,3 +62,7 @@ As a Practice Director at NetSPI, Karl leads the Cloud Penetration Testing servi
 
 ## Other books by the authors
 * [Microsoft Azure Security Technologies Certification and Beyond](https://www.packtpub.com/in/security/microsoft-azure-security-technologies-certification-guide?utm_source=github&utm_medium=repository&utm_campaign=9781800562653)
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781839212932">https://packt.link/free-ebook/9781839212932 </a> </p>
