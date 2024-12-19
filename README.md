@@ -47,6 +47,9 @@ With the following software and hardware list you can run all code files present
 
 We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it](https://static.packt-cdn.com/downloads/9781839212932_ColorImages.pdf).
 
+### Errata
+* Page 94 (Paragraph 3, Point no 2): Change your directory path to the MicroBurst directory and import the PowerShell functions using the fp;;pwomg commands: _should_be_ Change your directory path to the MicroBurst directory and import the PowerShell functions using the following commands:
+
 ### Related products
 * Learn Azure Sentinel [[Packt]](https://www.packtpub.com/product/learn-azure-sentinel/9781838980924?utm_source=github&utm_medium=repository&utm_campaign=9781838980924) [[Amazon]](https://www.amazon.com/dp/183898092X)
 
